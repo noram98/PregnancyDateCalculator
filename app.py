@@ -21,7 +21,7 @@ def pregnancy_dates():
     if request.method == "POST":
         try:
             transfer_date_str = request.form["transfer_date"]
-            transfer_date = datetime.strptime(transfer_date_str, "%m/%d/%Y")
+            transfer_date = datetime.strptime(transfer_date_str, "%Y-%m-%d")
             lmp = transfer_date - timedelta(days=19)
             obus_6w5d = lmp + timedelta(weeks=6, days=5)
             obus_8w5d = lmp + timedelta(weeks=8, days=5)
