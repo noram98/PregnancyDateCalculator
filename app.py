@@ -38,7 +38,7 @@ def pregnancy_dates():
                 "6 Weeks, 5 Days OB Ultrasound": format_date(obus_6w5d),
                 "8 Weeks, 5 Days OB Ultrasound": format_date(obus_8w5d),
                 "Week 10 (Last Day of Support Medications)": format_date(support_med_stop),
-                "20 Week Anatomy Scan": format_date(week20),
+                "Week 20": format_date(week20),
                 "Estimated Due Date (EDD)": format_date(edd),
             }
 
