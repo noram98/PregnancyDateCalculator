@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Pregnancy Date Calculator</title>
+    <style>
+      body {
+        font-family: 'Helvetica Neue', Arial, sans-serif;
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 1rem;
+        line-height: 1.6;
+        color: #333;
+      }
+
+      h2 {
+        font-weight: bold;
+      }
+
+      input[type='text'] {
+        padding: 0.5rem;
+        font-size: 1rem;
+        width: 60%;
+        margin-right: 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      button {
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        background-color: #0066cc;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #004999;
+      }
+
+      ul {
+        padding-left: 1.2rem;
+      }
+
+      li {
+        margin-bottom: 0.5rem;
+      }
+
+      p {
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Enter Embryo Transfer Date (MM/DD/YYYY)</h2>
+    <form method="post">
+      <input
+        type="text"
+        name="transfer_date"
+        placeholder="MM/DD/YYYY"
+        required
+      />
+      <button type="submit">Calculate</button>
+    </form>
+
+    {% if error %}
+    <p>{{ error }}</p>
+    {% endif %} {% if results %}
+    <h3>Pregnancy Management Dates:</h3>
+    <ul>
+      {% for label, date in results.items() %}
+      <li><strong>{{ label }}:</strong> {{ date }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </body>
+</html>
