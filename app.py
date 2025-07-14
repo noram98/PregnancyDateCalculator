@@ -32,7 +32,7 @@ def index():
                 "Calculated LMP": format_date(lmp),
                 "6w5d OBUS": format_date(obus_6w5d),
                 "8w5d OBUS": format_date(obus_8w5d),
-                "Week 10: Last Day of Support Medications": format_date(support_med_stop),
+                "Week 10 (Last Day of Support Medications)": format_date(support_med_stop),
                 "Week 20": format_date(week20),
                 "Estimated Due Date (EDD)": format_date(edd),
             }
