@@ -16,7 +16,8 @@
         font-weight: bold;
       }
 
-      input[type='text'] {
+      input[type='date'] {
+        font-family: 'Roboto', sans-serif;
         padding: 0.5rem;
         font-size: 1rem;
         width: 60%;
@@ -50,17 +51,16 @@
       p {
         color: red;
       }
+
+      #copyBtn {
+        margin-top: 1rem;
+      }
     </style>
   </head>
   <body>
     <h2>Enter Embryo Transfer Date (MM/DD/YYYY)</h2>
     <form method="post">
-      <input
-        type="text"
-        name="transfer_date"
-        placeholder="MM/DD/YYYY"
-        required
-      />
+      <input type="date" name="transfer_date" required />
       <button type="submit">Calculate</button>
     </form>
 
@@ -68,11 +68,26 @@
     <p>{{ error }}</p>
     {% endif %} {% if results %}
     <h3>Pregnancy Management Dates:</h3>
-    <ul>
+    <ul id="resultsList">
       {% for label, date in results.items() %}
       <li><strong>{{ label }}:</strong> {{ date }}</li>
       {% endfor %}
     </ul>
+
+    <button id="copyBtn" onclick="copyResults()">Copy to Clickboard</button>
+
+    <script>
+      function copyResults() {
+        const items = document.querySelectorAll('#resultsList li')
+        let text = ''
+        items.forEach(item => {
+          text += item.innerText + '\n'
+        })
+        navigator.clipboard.writeText(text.trim()).then(() => {
+          alert('Copied to clipboard!')
+        })
+      }
+    </script>
     {% endif %}
   </body>
 </html>

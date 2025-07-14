@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Embryo Transfer Chart Note Generator</title>
+  </head>
+  <body
+    style="font-family: Roboto, sans-serif; max-width: 600px; margin: 40px auto"
+  >
+    <h2>Embryo Transfer Chart Note Generator</h2>
+
+    <form method="post">
+      <label for="transfer_date">Embryo Transfer Date:</label><br />
+      <input
+        type="date"
+        name="transfer_date"
+        required
+        value="{{ default_date }}"
+      /><br /><br />
+
+      <label for="transfer_time">Transfer Time (PM):</label><br />
+      <input
+        type="time"
+        name="transfer_time"
+        required
+        step="900"
+        value="14:00"
+      /><br /><br />
+
+      <label for="physician">Physician:</label><br />
+      <select name="physician" required>
+        <option disabled selected value="">-- Select Physician --</option>
+        <option value="Dr. Massie">Dr. Massie</option>
+        <option value="Dr. Lamb">Dr. Lamb</option>
+        <option value="Dr. Broughton">Dr. Broughton</option>
+        <option value="Dr. Tsai">Dr. Tsai</option>
+        <option value="Dr. Zhou">Dr. Zhou</option>
+        <option value="Dr. Cottrell">Dr. Cottrell</option>
+        <option value="Dr. Rothenberg">Dr. Rothenberg</option>
+        <option value="Dr. Shahine">Dr. Shahine</option>
+        <option value="Dr. Adams">Dr. Adams</option></select
+      ><br /><br />
+
+      <button type="submit">Generate Note</button>
+    </form>
+
+    {% if note %}
+    <h3>Generated Chart Note:</h3>
+    <textarea id="noteText" rows="5" style="width: 100%" readonly>
+{{ note }}</textarea
+    >
+    <br /><br />
+    <button onclick="copyNote()">Copy Note</button>
+
+    <script>
+      function copyNote() {
+        const note = document.getElementById('noteText')
+        note.select()
+        note.setSelectionRange(0, 99999) // for mobile
+        document.execCommand('copy')
+        alert('Note copied to clipboard!')
+      }
+    </script>
+    {% endif %}
+  </body>
+</html>
