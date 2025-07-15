@@ -35,8 +35,8 @@ def pregnancy_dates():
             results = {
                 "Embryo Transfer Date": format_date(transfer_date),
                 "Calculated First Day of Last Menstrual Period (LMP)": format_date(lmp),
-                "6 Weeks, 5 Days OB Ultrasound": format_date(obus_6w5d),
-                "8 Weeks, 5 Days OB Ultrasound": format_date(obus_8w5d),
+                "6.5 Week OB Ultrasound": format_date(obus_6w5d),
+                "8.5 Week OB Ultrasound": format_date(obus_8w5d),
                 "Week 10 (Last Day of Support Medications)": format_date(support_med_stop),
                 "Week 20": format_date(week20),
                 "Estimated Due Date (EDD)": format_date(edd),
