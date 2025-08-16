@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Beta-hCG Calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      :root { --ink:#111; --muted:#666; --accent:#0b62d6; }
+      body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; padding: 24px; color: var(--ink); }
+      .wrap { max-width: 640px; margin: 0 auto; }
+      a.back { text-decoration: none; color: var(--accent); font-size: 0.9rem; }
+      h2 { margin: 12px 0 20px; font-size: 1.6rem; }
+      label { display: block; margin-top: 16px; font-size: 0.9rem; color: var(--muted); }
+      input, select { width: 100%; margin-top: 6px; padding: 10px 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 8px; }
+      button { margin-top: 18px; padding: 10px 16px; font-size: 1rem; border: none; border-radius: 8px; background: var(--accent); color: #fff; cursor: pointer; }
+      button:hover { filter: brightness(0.95); }
+      .result { margin-top: 24px; font-size: 1.1rem; font-weight: 500; color: var(--ink); }
+      .result strong { color: var(--accent); }
+      .error { margin-top: 20px; color: #b00020; font-weight: 500; }
+      .note { margin-top: 6px; font-size: 0.85rem; color: var(--muted); }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+          <a
+      href="/"
+      style="
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        font-size: 0.9rem;
+        color: #0066cc;
+        text-decoration: none;
+      "
+    >
+      ← Back to Main Page
+    </a>
+      <h2>Beta-hCG Calculator</h2>
+
+      <form method="post" novalidate>
+        <label for="first_value">1st beta-hCG value (mIU/mL)</label>
+        <input
+          id="first_value"
+          name="first_value"
+          type="number"
+          step="any"
+          min="0"
+          placeholder="Enter value"
+          value="{{ request.form.first_value or '' }}"
+          required
+        />
+
+        <label for="days">Days apart</label>
+        <select id="days" name="days">
+          <option value="2" {% if request.form.get('days','2') == '2' %}selected{% endif %}>2 days</option>
+          <option value="3" {% if request.form.get('days') == '3' %}selected{% endif %}>3 days</option>
+          <option value="4" {% if request.form.get('days') == '4' %}selected{% endif %}>4 days</option>
+        </select>
+
+        <button type="submit">Calculate</button>
+      </form>
+
+      {% if expected is not none %}
+        <p class="result">
+          Expected 2nd beta-hCG: <strong>{{ "%.2f"|format(expected) }}</strong> mIU/mL
+        </p>
+      {% elif error %}
+        <p class="error">{{ error }}</p>
+      {% endif %}
+    </div>
+  </body>
+</html>

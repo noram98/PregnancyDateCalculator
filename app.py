@@ -1,6 +1,5 @@
 import webbrowser
 from datetime import datetime, timedelta
-
 from flask import Flask, render_template, request
 
 app = Flask(__name__)
@@ -34,7 +33,7 @@ def pregnancy_dates():
 
             results = {
                 "Embryo Transfer Date": format_date(transfer_date),
-                "Calculated First Day of Last Menstrual Period (LMP)": format_date(lmp),
+                "Calculated Last Menstrual Period (LMP)": format_date(lmp),
                 "6.5 Week OB Ultrasound": format_date(obus_6w5d),
                 "8.5 Week OB Ultrasound": format_date(obus_8w5d),
                 "Week 10 (Last Day of Support Medications)": format_date(support_med_stop),
@@ -60,7 +59,6 @@ def transfer_note():
         physician = request.form["physician"]
 
         try:
-            # Parse date and time
             transfer_date = datetime.strptime(date_str, "%Y-%m-%d")
             transfer_time = datetime.strptime(time_str, "%H:%M")
 
@@ -68,7 +66,6 @@ def transfer_note():
             if transfer_time.hour < 12:
                 transfer_time = transfer_time.replace(hour=transfer_time.hour + 12)
 
-            # Format output values
             transfer_date_str = transfer_date.strftime("%m/%d/%Y")
             formatted_time = transfer_time.strftime("%-I:%M %p")
             check_in_time = (datetime.combine(transfer_date, transfer_time.time()) - timedelta(minutes=30)).strftime(
@@ -76,7 +73,6 @@ def transfer_note():
             )
             prog_start_date_str = (transfer_date - timedelta(days=5)).strftime("%m/%d/%Y")
 
-            # Final note
             note = (
                 f"Spoke with the patient regarding embryo transfer date and time. "
                 f"Patient is scheduled for embryo transfer on {transfer_date_str} at {formatted_time} with {physician}. \n"
@@ -93,6 +89,23 @@ def transfer_note():
             note = "Invalid input format. Please try again."
 
     return render_template("transfer_note.html", note=note, default_date=default_date)
+
+
+# --- bHCG Calculator ---
+@app.route("/bhcg-calculator", methods=["GET", "POST"])
+def bhcg_calculator():
+    expected = None
+    error = None
+
+    if request.method == "POST":
+        try:
+            first_value = float(request.form["first_value"])
+            days = int(request.form["days"]) if request.form["days"] else 2
+            expected = round(first_value * (1.6 ** (days / 2)), 2)
+        except (ValueError, KeyError):
+            error = "Invalid input. Please enter a valid number."
+
+    return render_template("bhcg_calculator.html", expected=expected, error=error)
 
 
 if __name__ == "__main__":

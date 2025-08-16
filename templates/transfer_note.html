@@ -1,78 +1,110 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <meta charset="utf-8" />
     <title>Embryo Transfer Chart Note Generator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      :root { --ink:#111; --muted:#666; --line:#e5e7eb; --accent:#0b62d6; --accent-d:#094ea4; }
+      body { font-family: system-ui, -apple-system, "Helvetica Neue", Roboto, Arial, sans-serif; margin: 0; padding: 28px; color: var(--ink); }
+      .wrap { max-width: 680px; margin: 0 auto; }
+      a.back { text-decoration: none; color: var(--accent); font-size: 0.9rem; }
+      h2 { margin: 20px 0 24px; font-size: 1.7rem; font-weight: 700; }
+      form { margin: 16px 0 24px; display: grid; gap: 20px; }
+      label { font-size: 1rem; color: var(--muted); display: block; margin-bottom: 6px; }
+      input, select, textarea { width: 100%; padding: 12px 14px; font-size: 1rem; border: 1px solid #ccc; border-radius: 8px; }
+      button { padding: 12px 20px; font-size: 1rem; border: none; border-radius: 8px; background: var(--accent); color: #fff; cursor: pointer; }
+      button:hover { background: var(--accent-d); }
+      .section-title { margin-top: 28px; margin-bottom: 12px; font-weight: 600; font-size: 1.2rem; }
+      .actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
+      textarea { margin-top: 8px; }
+      .muted { color: var(--muted); font-size: 0.9rem; margin-top: 4px; }
+    </style>
   </head>
-  <body
-    style="font-family: Roboto, sans-serif; max-width: 600px; margin: 40px auto"
-  >
-    <a
-      href="/"
-      style="
-        position: absolute;
-        top: 20px;
-        left: 20px;
-        font-size: 0.9rem;
-        color: #0066cc;
-        text-decoration: none;
-      "
-    >
-      ← Back to Main Page
-    </a>
-    <h2>Embryo Transfer Chart Note Generator</h2>
+  <body>
+    <div class="wrap">
+      <a
+        href="/"
+        style="
+          position: absolute;
+          top: 20px;
+          left: 20px;
+          font-size: 0.9rem;
+          color: #0066cc;
+          text-decoration: none;
+        "
+      >
+        ← Back to Main Page
+      </a>
 
-    <form method="post">
-      <label for="transfer_date">Embryo Transfer Date:</label><br />
-      <input
-        type="date"
-        name="transfer_date"
-        required
-        value="{{ default_date }}"
-      /><br /><br />
+      <h2>Embryo Transfer Chart Note Generator</h2>
 
-      <label for="transfer_time">Transfer Time (PM):</label><br />
-      <input
-        type="time"
-        name="transfer_time"
-        required
-        step="900"
-        value="14:00"
-      /><br /><br />
+      <form method="post" novalidate>
+        <div>
+          <label for="transfer_date">Embryo Transfer Date</label>
+          <input
+            id="transfer_date"
+            type="date"
+            name="transfer_date"
+            required
+            value="{{ request.form.transfer_date or default_date }}"
+          />
+        </div>
 
-      <label for="physician">Physician:</label><br />
-      <select name="physician" required>
-        <option disabled selected value="">-- Select Physician --</option>
-        <option value="Dr. Massie">Dr. Massie</option>
-        <option value="Dr. Lamb">Dr. Lamb</option>
-        <option value="Dr. Broughton">Dr. Broughton</option>
-        <option value="Dr. Tsai">Dr. Tsai</option>
-        <option value="Dr. Zhou">Dr. Zhou</option>
-        <option value="Dr. Cottrell">Dr. Cottrell</option>
-        <option value="Dr. Rothenberg">Dr. Rothenberg</option>
-        <option value="Dr. Shahine">Dr. Shahine</option>
-        <option value="Dr. Adams">Dr. Adams</option></select
-      ><br /><br />
+        <div>
+          <label for="transfer_time">Transfer Time (PM)</label>
+          <input
+            id="transfer_time"
+            type="time"
+            name="transfer_time"
+            required
+            value="{{ request.form.transfer_time or '14:00' }}"
+          />
+        </div>
 
-      <button type="submit">Generate Note</button>
-    </form>
+        <div>
+          <label for="physician">Physician</label>
+          <select id="physician" name="physician" required>
+            <option value="" disabled {% if not request.form.get('physician') %}selected{% endif %}>-- Select Physician --</option>
+            <option value="Dr. Massie"     {% if request.form.get('physician') == 'Dr. Massie' %}selected{% endif %}>Dr. Massie</option>
+            <option value="Dr. Lamb"       {% if request.form.get('physician') == 'Dr. Lamb' %}selected{% endif %}>Dr. Lamb</option>
+            <option value="Dr. Broughton"  {% if request.form.get('physician') == 'Dr. Broughton' %}selected{% endif %}>Dr. Broughton</option>
+            <option value="Dr. Tsai"       {% if request.form.get('physician') == 'Dr. Tsai' %}selected{% endif %}>Dr. Tsai</option>
+            <option value="Dr. Zhou"       {% if request.form.get('physician') == 'Dr. Zhou' %}selected{% endif %}>Dr. Zhou</option>
+            <option value="Dr. Cottrell"   {% if request.form.get('physician') == 'Dr. Cottrell' %}selected{% endif %}>Dr. Cottrell</option>
+            <option value="Dr. Rothenberg" {% if request.form.get('physician') == 'Dr. Rothenberg' %}selected{% endif %}>Dr. Rothenberg</option>
+            <option value="Dr. Shahine"    {% if request.form.get('physician') == 'Dr. Shahine' %}selected{% endif %}>Dr. Shahine</option>
+            <option value="Dr. Adams"      {% if request.form.get('physician') == 'Dr. Adams' %}selected{% endif %}>Dr. Adams</option>
+          </select>
+        </div>
 
-    {% if note %}
-    <h3>Generated Chart Note:</h3>
-    <textarea id="noteText" rows="5" style="width: 100%" readonly>
-{{ note }}</textarea
-    >
-    <br /><br />
-    <button onclick="copyNote()">Copy Note</button>
+        <button type="submit">Generate Note</button>
+      </form>
 
-    <script>
-      function copyNote() {
-        const note = document.getElementById('noteText')
-        note.select()
-        note.setSelectionRange(0, 99999) // for mobile
-        document.execCommand('copy')
-        alert('Note copied to clipboard!')
-      }
-    </script>
-    {% endif %}
+      {% if note %}
+        <div class="section-title">Generated Chart Note</div>
+        <textarea id="noteText" rows="8" readonly>{{ note }}</textarea>
+
+        <div class="actions">
+          <button type="button" id="copyBtn">Copy Note</button>
+        </div>
+
+        <script>
+          const copyBtn = document.getElementById('copyBtn');
+          copyBtn?.addEventListener('click', async () => {
+            const note = document.getElementById('noteText');
+            try {
+              await navigator.clipboard.writeText(note.value);
+              alert('Note copied to clipboard!');
+            } catch (e) {
+              // Fallback for older browsers
+              note.select(); note.setSelectionRange(0, 99999);
+              document.execCommand('copy');
+              alert('Note copied to clipboard!');
+            }
+          });
+        </script>
+      {% endif %}
+    </div>
   </body>
 </html>

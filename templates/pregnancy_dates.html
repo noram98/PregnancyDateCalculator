@@ -1,106 +1,147 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <meta charset="utf-8" />
     <title>Pregnancy Date Calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
+      :root {
+        --ink: #111;
+        --muted: #666;
+        --line: #e5e7eb;
+        --accent: #0b62d6;
+        --accent-d: #094ea4;
+      }
       body {
-        font-family: 'Helvetica Neue', Arial, sans-serif;
-        max-width: 600px;
-        margin: 2rem auto;
-        padding: 1rem;
-        line-height: 1.6;
-        color: #333;
+        font-family: system-ui, -apple-system, 'Helvetica Neue', Arial,
+          sans-serif;
+        margin: 0;
+        padding: 24px;
+        color: var(--ink);
       }
-
+      .wrap {
+        max-width: 640px;
+        margin: 0 auto;
+      }
+      a.back {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        font-size: 0.9rem;
+        color: var(--accent);
+        text-decoration: none;
+      }
       h2 {
-        font-weight: bold;
+        margin: 12px 0 16px;
+        font-size: 1.6rem;
+        font-weight: 700;
       }
-
+      form {
+        margin: 8px 0 16px;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      label {
+        font-size: 0.95rem;
+        color: var(--muted);
+      }
       input[type='date'] {
-        font-family: 'Roboto', sans-serif;
-        padding: 0.5rem;
+        padding: 10px 12px;
         font-size: 1rem;
-        width: 60%;
-        margin-right: 0.5rem;
         border: 1px solid #ccc;
-        border-radius: 4px;
+        border-radius: 8px;
       }
-
       button {
-        padding: 0.5rem 1rem;
+        padding: 10px 16px;
         font-size: 1rem;
-        background-color: #0066cc;
-        color: white;
         border: none;
-        border-radius: 4px;
+        border-radius: 8px;
+        background: var(--accent);
+        color: #fff;
         cursor: pointer;
       }
-
       button:hover {
-        background-color: #004999;
+        background: var(--accent-d);
       }
-
       ul {
-        padding-left: 1.2rem;
+        padding-left: 1.1rem;
+        margin: 8px 0 0;
       }
-
       li {
-        margin-bottom: 0.5rem;
+        margin: 6px 0;
       }
-
-      p {
-        color: red;
+      .error {
+        color: #b00020;
+        margin-top: 12px;
       }
-
-      #copyBtn {
-        margin-top: 1rem;
+      #copyWrap {
+        margin-top: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      #copyMsg {
+        font-size: 0.9rem;
+        color: var(--muted);
+        opacity: 0;
+        transition: opacity 0.4s;
+      }
+      #copyMsg.show {
+        opacity: 1;
       }
     </style>
   </head>
   <body>
-    <a
-      href="/"
-      style="
-        position: absolute;
-        top: 20px;
-        left: 20px;
-        font-size: 0.9rem;
-        color: #0066cc;
-        text-decoration: none;
-      "
-    >
-      ← Back to Main Page
-    </a>
-    <h2>Enter Embryo Transfer Date (MM/DD/YYYY)</h2>
-    <form method="post">
-      <input type="date" name="transfer_date" required />
-      <button type="submit">Calculate</button>
-    </form>
+    <!-- Back button outside wrap so it never moves -->
+    <a href="/" class="back">← Back to Main Page</a>
 
-    {% if error %}
-    <p>{{ error }}</p>
-    {% endif %} {% if results %}
-    <h3>Pregnancy Management Dates:</h3>
-    <ul id="resultsList">
-      {% for label, date in results.items() %}
-      <li><strong>{{ label }}:</strong> {{ date }}</li>
-      {% endfor %}
-    </ul>
+    <div class="wrap">
+      <h2>Pregnancy Date Calculator</h2>
 
-    <button id="copyBtn" onclick="copyResults()">Copy to Clickboard</button>
+      <form method="post" novalidate>
+        <label for="transfer_date">Enter Embryo Transfer Date: </label>
+        <input
+          id="transfer_date"
+          type="date"
+          name="transfer_date"
+          required
+          value="{{ request.form.transfer_date or '' }}"
+        />
+        <button type="submit">Calculate</button>
+      </form>
 
-    <script>
-      function copyResults() {
-        const items = document.querySelectorAll('#resultsList li')
-        let text = ''
-        items.forEach(item => {
-          text += item.innerText + '\n'
-        })
-        navigator.clipboard.writeText(text.trim()).then(() => {
-          alert('Copied to clipboard!')
-        })
-      }
-    </script>
-    {% endif %}
+      {% if error %}
+      <p class="error">{{ error }}</p>
+      {% endif %} {% if results %}
+      <h3>Pregnancy Management Dates</h3>
+      <ul id="resultsList">
+        {% for label, date in results.items() %}
+        <li><strong>{{ label }}:</strong> {{ date }}</li>
+        {% endfor %}
+      </ul>
+
+      <div id="copyWrap">
+        <button id="copyBtn" onclick="copyResults()">Copy to Clipboard</button>
+        <span id="copyMsg">Copied!</span>
+      </div>
+
+      <script>
+        function copyResults() {
+          const items = document.querySelectorAll('#resultsList li')
+          let text = ''
+          items.forEach(item => {
+            text += item.innerText + '\n'
+          })
+          navigator.clipboard.writeText(text.trim()).then(() => {
+            const msg = document.getElementById('copyMsg')
+            msg.classList.add('show')
+            setTimeout(() => msg.classList.remove('show'), 2000)
+          })
+        }
+      </script>
+      {% endif %}
+    </div>
   </body>
 </html>
